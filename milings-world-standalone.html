@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiLing's World</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #e9d5ff, #f3e8ff, #ddd6fe);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            33% { transform: translateY(-10px) translateX(5px); }
+            66% { transform: translateY(-5px) translateX(-3px); }
+        }
+
+        @keyframes float-delayed {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            33% { transform: translateY(-8px) translateX(-4px); }
+            66% { transform: translateY(-12px) translateX(2px); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+            40%, 43% { transform: translate3d(0, -30px, 0); }
+            70% { transform: translate3d(0, -15px, 0); }
+            90% { transform: translate3d(0, -4px, 0); }
+        }
+
+        @keyframes building-rise {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scale-in {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Cloud styles */
+        .clouds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .cloud-1 {
+            width: 80px;
+            height: 48px;
+            top: 40px;
+            left: 40px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .cloud-1::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 10px;
+        }
+
+        .cloud-1::after {
+            width: 60px;
+            height: 20px;
+            top: -10px;
+            left: 30px;
+        }
+
+        .cloud-2 {
+            width: 64px;
+            height: 32px;
+            top: 80px;
+            right: 80px;
+            animation: float-delayed 8s ease-in-out infinite;
+        }
+
+        .cloud-2::before {
+            width: 30px;
+            height: 30px;
+            top: -15px;
+            left: 5px;
+        }
+
+        .cloud-2::after {
+            width: 40px;
+            height: 15px;
+            top: -5px;
+            left: 20px;
+        }
+
+        .cloud-3 {
+            width: 96px;
+            height: 40px;
+            top: 128px;
+            left: 33%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .cloud-3::before {
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            left: 15px;
+        }
+
+        .cloud-3::after {
+            width: 50px;
+            height: 18px;
+            top: -8px;
+            left: 35px;
+        }
+
+        .cloud-4 {
+            width: 72px;
+            height: 36px;
+            top: 64px;
+            right: 33%;
+            animation: float-delayed 8s ease-in-out infinite;
+        }
+
+        .cloud-4::before {
+            width: 35px;
+            height: 35px;
+            top: -18px;
+            left: 8px;
+        }
+
+        .cloud-4::after {
+            width: 45px;
+            height: 16px;
+            top: -6px;
+            left: 25px;
+        }
+
+        /* Header styles */
+        .header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 48px 16px;
+        }
+
+        .main-title {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #581c87;
+            margin-bottom: 16px;
+            letter-spacing: 0.1em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #7c3aed;
+            font-weight: 500;
+        }
+
+        .character-container {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .character {
+            width: 64px;
+            height: 64px;
+            background: #7c3aed;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 2s infinite;
+        }
+
+        .character-inner {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .character-eye {
+            width: 8px;
+            height: 8px;
+            background: #7c3aed;
+            border-radius: 50%;
+        }
+
+        /* Cityscape styles */
+        .cityscape {
+            position: relative;
+            z-index: 10;
+            padding: 0 32px 64px;
+        }
+
+        .buildings-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .buildings {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .building {
+            position: relative;
+            width: 96px;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: building-rise 0.8s ease-out both;
+        }
+
+        .building:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .building-1 { background: #a855f7; height: 192px; animation-delay: 0s; }
+        .building-2 { background: #c084fc; height: 224px; animation-delay: 0.2s; }
+        .building-3 { background: #8b5cf6; height: 160px; animation-delay: 0.4s; }
+        .building-4 { background: #ddd6fe; height: 208px; animation-delay: 0.6s; }
+        .building-5 { background: #7c3aed; height: 176px; animation-delay: 0.8s; }
+
+        .building-windows {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+        }
+
+        .window {
+            background: rgba(147, 51, 234, 0.3);
+            border-radius: 4px;
+        }
+
+        .window:nth-child(1) { opacity: 0.8; }
+        .window:nth-child(2) { opacity: 0.6; }
+        .window:nth-child(3) { opacity: 0.7; }
+        .window:nth-child(4) { opacity: 0.8; }
+
+        .building-label {
+            position: absolute;
+            bottom: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+            font-weight: 600;
+            color: #581c87;
+            white-space: nowrap;
+        }
+
+        .building-hover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .building:hover .building-hover {
+            opacity: 0.2;
+        }
+
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            animation: fade-in 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 448px;
+            margin: 16px;
+            animation: scale-in 0.3s ease-out;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #581c87;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #7c3aed;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #581c87;
+        }
+
+        .modal-items {
+            margin-bottom: 24px;
+        }
+
+        .modal-item {
+            padding: 12px;
+            background: #f3e8ff;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-item:hover {
+            background: #e9d5ff;
+        }
+
+        .modal-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .item-text {
+            color: #581c87;
+            font-weight: 500;
+        }
+
+        .modal-button {
+            background: #7c3aed;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .modal-button:hover {
+            background: #6d28d9;
+        }
+
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 32px;
+            color: #7c3aed;
+        }
+
+        .footer-text {
+            font-size: 14px;
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .building {
+                width: 72px;
+            }
+
+            .buildings {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Clouds -->
+    <div class="clouds">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+        <div class="cloud cloud-4"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <h1 class="main-title">MiLing's World</h1>
+        <p class="subtitle">A whimsical journey through creativity and imagination</p>
+        <div class="character-container">
+            <div class="character">
+                <div class="character-inner">
+                    <div class="character-eye"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Interactive Cityscape -->
+    <div class="cityscape">
+        <div class="buildings-container">
+            <div class="buildings">
+                <div class="building building-1" data-building="portfolio">
+                    <div class="building-windows">
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                    </div>
+                    <div class="building-label">Portfolio</div>
+                    <div class="building-hover"></div>
+                </div>
+
+                <div class="building building-2" data-building="about">
+                    <div class="building-windows">
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                    </div>
+                    <div class="building-label">About</div>
+                    <div class="building-hover"></div>
+                </div>
+
+                <div class="building building-3" data-building="journal">
+                    <div class="building-windows">
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                    </div>
+                    <div class="building-label">Journal</div>
+                    <div class="building-hover"></div>
+                </div>
+
+                <div class="building building-4" data-building="connect">
+                    <div class="building-windows">
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                    </div>
+                    <div class="building-label">Connect</div>
+                    <div class="building-hover"></div>
+                </div>
+
+                <div class="building building-5" data-building="gallery">
+                    <div class="building-windows">
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                        <div class="window"></div>
+                    </div>
+                    <div class="building-label">Gallery</div>
+                    <div class="building-hover"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title" class="modal-title"></h2>
+                <button id="modal-close" class="modal-close">&times;</button>
+            </div>
+            <div id="modal-items" class="modal-items"></div>
+            <div style="text-align: center;">
+                <button id="modal-button" class="modal-button">Explore More</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p class="footer-text">Welcome to MiLing's imaginative universe ✨</p>
+    </footer>
+
+    <script>
+        // Building data
+        const buildingsData = {
+            portfolio: {
+                title: 'Portfolio & Projects',
+                items: ['Digital Art', 'Web Design', 'Illustrations', 'Photography']
+            },
+            about: {
+                title: 'About MiLing',
+                items: ['Creative Designer', 'Digital Artist', 'Dream Builder', 'World Creator']
+            },
+            journal: {
+                title: 'Creative Journal',
+                items: ['Daily Sketches', 'Design Process', 'Inspiration Notes', 'Project Stories']
+            },
+            connect: {
+                title: 'Let\'s Connect',
+                items: ['Email Me', 'Social Media', 'Collaborations', 'Say Hello']
+            },
+            gallery: {
+                title: 'Art Gallery',
+                items: ['Latest Works', 'Favorites', 'Experiments', 'Collections']
+            }
+        };
+
+        // DOM elements
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalItems = document.getElementById('modal-items');
+        const modalClose = document.getElementById('modal-close');
+        const modalButton = document.getElementById('modal-button');
+        const buildings = document.querySelectorAll('.building');
+
+        // Event listeners
+        buildings.forEach(building => {
+            building.addEventListener('click', () => {
+                const buildingType = building.getAttribute('data-building');
+                openModal(buildingType);
+            });
+        });
+
+        modalClose.addEventListener('click', closeModal);
+        modalButton.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Functions
+        function openModal(buildingType) {
+            const data = buildingsData[buildingType];
+            if (!data) return;
+
+            modalTitle.textContent = data.title;
+
+            modalItems.innerHTML = '';
+            data.items.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'modal-item';
+                itemDiv.innerHTML = `<span class="item-text">${item}</span>`;
+                modalItems.appendChild(itemDiv);
+            });
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        // Keyboard events
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

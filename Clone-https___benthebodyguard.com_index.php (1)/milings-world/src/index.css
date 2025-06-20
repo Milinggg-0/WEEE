@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom animations for MiLing's World */
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  33% {
+    transform: translateY(-10px) translateX(5px);
+  }
+  66% {
+    transform: translateY(-5px) translateX(-3px);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  33% {
+    transform: translateY(-8px) translateX(-4px);
+  }
+  66% {
+    transform: translateY(-12px) translateX(2px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes building-rise {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Apply animations */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out;
+}
+
+.building {
+  animation: building-rise 0.8s ease-out both;
+}
+
+/* Cloud pseudo-elements for more realistic cloud shapes */
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+
+.cloud-1::before {
+  width: 50px;
+  height: 50px;
+  top: -25px;
+  left: 10px;
+}
+
+.cloud-1::after {
+  width: 60px;
+  height: 20px;
+  top: -10px;
+  left: 30px;
+}
+
+.cloud-2::before {
+  width: 30px;
+  height: 30px;
+  top: -15px;
+  left: 5px;
+}
+
+.cloud-2::after {
+  width: 40px;
+  height: 15px;
+  top: -5px;
+  left: 20px;
+}
+
+.cloud-3::before {
+  width: 40px;
+  height: 40px;
+  top: -20px;
+  left: 15px;
+}
+
+.cloud-3::after {
+  width: 50px;
+  height: 18px;
+  top: -8px;
+  left: 35px;
+}
+
+.cloud-4::before {
+  width: 35px;
+  height: 35px;
+  top: -18px;
+  left: 8px;
+}
+
+.cloud-4::after {
+  width: 45px;
+  height: 16px;
+  top: -6px;
+  left: 25px;
+}
+
+/* Character bounce animation */
+.character {
+  animation: bounce 2s infinite;
+}
+
+/* Smooth transitions for all interactive elements */
+.building:hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar for modal content */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #a855f7;
+  border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #9333ea;
+}
